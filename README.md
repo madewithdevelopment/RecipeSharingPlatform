@@ -85,7 +85,7 @@ Sweta Jha
 
 ## License
 
-This project is for academic purposes under [Your College/University].
+This project is for academic purposes under Galgotias University .
 
 ---
 
