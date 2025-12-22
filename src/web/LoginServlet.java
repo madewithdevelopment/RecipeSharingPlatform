@@ -1,35 +1,54 @@
 package web;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.*;
+import dao.UserDAO;
+import model.User;
 
-// A basic Java Servlet to demo user login handling via POST request
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+
+@WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    // This method handles POST requests from the client
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        
-        // Read user input parameters 'email' and 'password' from the request
-        String email = request.getParameter("email");
+    @Override
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.setCharacterEncoding("UTF-8");
+
+        String email = request.getParameter("username");
         String password = request.getParameter("password");
 
-        // Set the response type to HTML
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
+        // basic server-side validation
+        if (email == null || email.trim().isEmpty()
+                || password == null || password.trim().isEmpty()) {
 
-        // Begin HTML response output
-        out.println("<html><body>");
-        
-        // Simple login check: if matched, login successful; else, failed
-        if("admin@example.com".equals(email) && "admin123".equals(password)) {
-            out.println("<h2>Login successful!</h2>");
-        } else {
-            out.println("<h2>Login failed. Please try again.</h2>");
+            request.setAttribute("error", "Email and password are required.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
         }
 
-        // End HTML output
-        out.println("</body></html>");
+        try {
+            UserDAO userDao = new UserDAO();
+            User user = userDao.loginUser(email.trim(), password.trim());
+
+            if (user != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("currentUser", user);
+                session.setAttribute("userEmail", user.getEmail());
+                session.setAttribute("userRole", user.getRole());
+
+                response.sendRedirect("listRecipes");
+            } else {
+                request.setAttribute("error", "Invalid email or password.");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Login failed due to server error.");
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+        }
     }
 }

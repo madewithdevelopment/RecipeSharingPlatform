@@ -36,11 +36,11 @@ public class UserDAO {
              ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 User user = new User(
-                    rs.getInt("user_id"),
-                    rs.getString("name"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getString("role"));
+                        rs.getInt("user_id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("role"));
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -59,11 +59,11 @@ public class UserDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     user = new User(
-                        rs.getInt("user_id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("role"));
+                            rs.getInt("user_id"),
+                            rs.getString("name"),
+                            rs.getString("email"),
+                            rs.getString("password"),
+                            rs.getString("role"));
                 }
             }
         } catch (SQLException e) {

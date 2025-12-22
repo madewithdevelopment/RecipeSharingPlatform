@@ -22,7 +22,7 @@ public class Recipe {
     public String getIngredients() { return ingredients; }
     public String getSteps() { return steps; }
     public int getUserId() { return userId; }
-    
+
     // Setters
     public void setRecipeId(int recipeId) { this.recipeId = recipeId; }
     public void setTitle(String title) { this.title = title; }

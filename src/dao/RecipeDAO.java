@@ -32,15 +32,39 @@ public class RecipeDAO {
         List<Recipe> recipes = new ArrayList<>();
         String query = "SELECT * FROM recipes";
         try (Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(query)) {
+             ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Recipe recipe = new Recipe(
-                    rs.getInt("recipe_id"),
-                    rs.getString("title"),
-                    rs.getString("ingredients"),
-                    rs.getString("steps"),
-                    rs.getInt("user_id"));
+                        rs.getInt("recipe_id"),
+                        rs.getString("title"),
+                        rs.getString("ingredients"),
+                        rs.getString("steps"),
+                        rs.getInt("user_id"));
                 recipes.add(recipe);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return recipes;
+    }
+
+    // Search by title
+    public List<Recipe> searchRecipesByTitle(String keyword) {
+        List<Recipe> recipes = new ArrayList<>();
+        String query = "SELECT * FROM recipes WHERE title LIKE ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, "%" + keyword + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Recipe recipe = new Recipe(
+                            rs.getInt("recipe_id"),
+                            rs.getString("title"),
+                            rs.getString("ingredients"),
+                            rs.getString("steps"),
+                            rs.getInt("user_id"));
+                    recipes.add(recipe);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
